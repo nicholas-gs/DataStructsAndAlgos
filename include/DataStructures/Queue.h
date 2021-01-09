@@ -20,23 +20,21 @@ namespace wtl {
     private:
 
         /// Underlying doubly linked list data structure
-        wtl::DoublyLinkedList<T>* m_dll = nullptr;
+        wtl::DoublyLinkedList<T> m_dll;
 
     public:
 
         /**
          * Constructor
          */
-        Queue() {
-            m_dll = new wtl::DoublyLinkedList<T>();
-        }
+        Queue() = default;
 
         /**
          * Copy constructor
          * @param other
          */
         Queue(const Queue<T>& other) noexcept {
-            m_dll = new wtl::DoublyLinkedList<T>(*other.m_dll);
+            m_dll = other.m_dll;
         }
 
         /**
@@ -47,7 +45,7 @@ namespace wtl {
         Queue<T>& operator=(const Queue<T>& other) noexcept {
             if (this != &other) {
                 clear();
-                *m_dll = *(other.m_dll);
+                m_dll = other.m_dll;
             }
             return *this;
         }
@@ -57,7 +55,7 @@ namespace wtl {
          * @param other
          */
         Queue(Queue<T>&& other) noexcept {
-            m_dll = new wtl::DoublyLinkedList<T>(std::move(*(other.m_dll)));
+            m_dll = std::move(other.m_dll);
         }
 
         /**
@@ -68,7 +66,7 @@ namespace wtl {
         Queue<T>& operator=(Queue<T>&& other) noexcept {
             if (this != &other) {
                 clear();
-                *m_dll = std::move(*(other.m_dll));
+                m_dll = std::move(other.m_dll);
             }
             return *this;
         }
@@ -78,7 +76,7 @@ namespace wtl {
          * @return Length of the queue
          */
         [[nodiscard]] std::size_t getSize() const noexcept {
-            return m_dll->getSize();
+            return m_dll.getSize();
         }
 
         /**
@@ -86,7 +84,7 @@ namespace wtl {
          * @return True if queue is empty, false if not
          */
         [[nodiscard]] bool isEmpty() const noexcept {
-            return m_dll->isEmpty();
+            return m_dll.isEmpty();
         }
 
         /**
@@ -94,7 +92,7 @@ namespace wtl {
          * @return Reference to the front of the queue
          */
         [[nodiscard]] T& peek() noexcept {
-            return m_dll->front();
+            return m_dll.front();
         }
 
         /**
@@ -102,7 +100,7 @@ namespace wtl {
          * @return Const reference to the front of the queue
          */
         [[nodiscard]] const T& peek() const noexcept {
-            return m_dll->front();
+            return m_dll.front();
         }
 
         /**
@@ -111,7 +109,7 @@ namespace wtl {
          * @return True if element is in the queue, false if not
          */
         [[nodiscard]] bool contains(const T& element) const noexcept {
-            return m_dll->contains(element);
+            return m_dll.contains(element);
         }
 
         /**
@@ -120,7 +118,7 @@ namespace wtl {
          * @return
          */
         [[nodiscard]] std::size_t count(const T& element) const noexcept {
-            return m_dll->count(element);
+            return m_dll.count(element);
         }
 
         /**
@@ -128,7 +126,7 @@ namespace wtl {
          * @param func Lambda that returns void and takes in a T reference.
          */
         void foreach(const std::function<void(T&)>& func) noexcept {
-            m_dll->foreach(func);
+            m_dll.foreach(func);
         }
 
         /**
@@ -136,7 +134,7 @@ namespace wtl {
          * @param func Lambda that returns void and takes in a const T reference
          */
         void foreach(const std::function<void(const T&)>& func) const noexcept {
-            m_dll->foreach(func);
+            m_dll.foreach(func);
         }
 
         /**
@@ -163,7 +161,7 @@ namespace wtl {
          * @return
          */
         bool operator==(const Queue<T>& other) const noexcept {
-            return (*m_dll) == (*(other.m_dll));
+            return m_dll == other.m_dll;
         }
 
         /**
@@ -172,7 +170,7 @@ namespace wtl {
          * @return
          */
         bool operator!=(const Queue<T>& other) const noexcept {
-            return !((*m_dll) == (*(other.m_dll)));
+            return !(m_dll == other.m_dll);
         }
 
         /**
@@ -180,7 +178,7 @@ namespace wtl {
          * @param element
          */
         void enqueue(const T& element) noexcept {
-            m_dll->appendBack(element);
+            m_dll.appendBack(element);
         }
 
         /**
@@ -188,7 +186,7 @@ namespace wtl {
          * @param element
          */
         void enqueue(T&& element) noexcept {
-            m_dll->appendBack(std::move(element));
+            m_dll.appendBack(std::move(element));
         }
 
         /**
@@ -199,7 +197,7 @@ namespace wtl {
          */
         template<typename ... Ts>
         T& emplace(Ts&& ... args) noexcept {
-            return m_dll->emplaceBack(std::forward<Ts>(args)...);
+            return m_dll.emplaceBack(std::forward<Ts>(args)...);
         }
 
         /**
@@ -210,25 +208,20 @@ namespace wtl {
             if (isEmpty()) {
                 throw std::runtime_error("Cannot dequeue empty queue");
             }
-            m_dll->detachFront();
+            m_dll.detachFront();
         }
 
         /**
          * Clear the queue. Size is reset to 0.
          */
         void clear() noexcept {
-            m_dll->clear();
+            m_dll.clear();
         }
 
         /**
          * Destructor
          */
-        ~Queue() {
-            if (m_dll != nullptr) {
-                m_dll->clear();
-                delete m_dll;
-            }
-        }
+        ~Queue() = default;
 
     };
 
