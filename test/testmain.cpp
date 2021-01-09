@@ -38,6 +38,7 @@
 #include "DataStructures/ClosedMap_uut.h"
 #include "DataStructures/BiMap_uut.h"
 #include "DataStructures/IndexedPriorityQueue_uut.h"
+#include "DataStructures/Queue_uut.h"
 
 // Flow Networks
 #include "FlowNetworks/FlowNetwork_uut.h"
