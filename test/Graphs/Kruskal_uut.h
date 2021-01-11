@@ -31,7 +31,7 @@ TEST_CASE("Kruskal's algorithm on a connected graph") {
     graph.addEdge(3, 6, 45);
     graph.addEdge(4, 7, 18);
 
-    std::vector<wtl::UndirectedEdge> mstRef;
+    std::vector<wtl::WeightedUndirectedEdge> mstRef;
     mstRef.emplace_back(0, 7, 1);
     mstRef.emplace_back(2, 3, 2);
     mstRef.emplace_back(1, 7, 3);

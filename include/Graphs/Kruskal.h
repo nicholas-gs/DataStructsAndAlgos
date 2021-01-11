@@ -24,7 +24,7 @@ namespace wtl {
     private:
 
         using Graph = SimpleGraph_Weighted<false>;
-        using Edge = UndirectedEdge;
+        using Edge = WeightedUndirectedEdge;
         using Sort = wtl::MergeSort<Edge>;
         using UF = wtl::UnionFind;
         using Bucket = std::vector<Edge>;

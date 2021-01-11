@@ -163,7 +163,7 @@ namespace wtl {
                 throw std::runtime_error("No path to specified vertex");
             }
             if constexpr (!directed) {
-                using Edge = wtl::UndirectedEdge;
+                using Edge = wtl::WeightedUndirectedEdge;
                 std::vector <Edge> result;
                 while (m_Prev[v].m_V != NULL_VERTEX) {
                     result.emplace_back(m_Prev[v].m_V, v, m_Prev[v].m_Weight);
@@ -172,7 +172,7 @@ namespace wtl {
                 std::reverse(result.begin(), result.end());
                 return result;
             } else {
-                using Edge = wtl::DirectedEdge;
+                using Edge = wtl::WeightedDirectedEdge;
                 std::vector <Edge> result;
                 while (m_Prev[v].m_V != NULL_VERTEX) {
                     result.emplace_back(m_Prev[v].m_V, v, m_Prev[v].m_Weight);

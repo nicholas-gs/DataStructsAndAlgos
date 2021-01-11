@@ -11,6 +11,8 @@
 #include <set>
 #include <memory>
 
+#include "Edges/Edges.h"
+
 namespace wtl {
 
     /**
@@ -143,6 +145,32 @@ namespace wtl {
                 vector.push_back(w);
             }
             return vector;
+        }
+
+        /**
+         * Get all edges in the graph
+         * @return vector of edges
+         */
+        [[nodiscard]] auto allEdges() const {
+            if constexpr (m_Directed) {
+                std::vector<wtl::UnWeightedDirectedEdge> vector;
+                for (std::size_t v = 0; v < m_VertexCount; v++) {
+                    for (std::size_t w : m_Graph[v]) {
+                        vector.emplace_back(v, w);
+                    }
+                }
+                return vector;
+            } else {
+                std::vector<wtl::UnWeightedUndirectedEdge> vector;
+                for (std::size_t v = 0; v < m_VertexCount; v++) {
+                    for (std::size_t w : m_Graph[v]) {
+                        if (w >= v) {
+                            vector.emplace_back(v, w);
+                        }
+                    }
+                }
+                return vector;
+            }
         }
 
         /**

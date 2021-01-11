@@ -32,7 +32,7 @@ TEST_CASE("Shortest path using Topological_SP (1)") {
     graph.addEdge(7, 2, 7);
 
     wtl::Topological_SP sp(graph, 0);
-    using Edge = wtl::DirectedEdge;
+    using Edge = wtl::WeightedDirectedEdge;
 
     SECTION("Getting shortest path between 2 vertices that exists (1)") {
         std::vector<Edge> refSP;
@@ -73,7 +73,7 @@ TEST_CASE("Shortest Path using Topological_SP (2)") {
     graph.addEdge(6, 7, 2);
 
     wtl::Topological_SP sp(graph, 0);
-    using Edge = wtl::DirectedEdge;
+    using Edge = wtl::WeightedDirectedEdge;
 
     SECTION("Getting shortest path between 2 vertices that exists (1)") {
         std::vector<Edge> refSP;
@@ -106,7 +106,7 @@ TEST_CASE("Shortest Path using Topological_SP (3)") {
     graph.addEdge(6, 0, 0.58);
     graph.addEdge(6, 4, 0.93);
 
-    using Edge = wtl::DirectedEdge;
+    using Edge = wtl::WeightedDirectedEdge;
 
     SECTION("Getting shortest path between 2 vertices that exists (1)") {
         wtl::Topological_SP sp(graph, 5);

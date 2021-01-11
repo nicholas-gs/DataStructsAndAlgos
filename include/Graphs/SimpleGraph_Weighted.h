@@ -160,15 +160,41 @@ namespace wtl {
                 throw std::invalid_argument("Invalid vertex");
             }
             if constexpr (m_Directed) {
-                std::vector<wtl::DirectedEdge> vector;
+                std::vector<wtl::WeightedDirectedEdge> vector;
                 for (const auto& e : m_Graph[v]) {
-                    vector.push_back(wtl::DirectedEdge(v, e.w, e.weight));
+                    vector.push_back(wtl::WeightedDirectedEdge(v, e.w, e.weight));
                 }
                 return vector;
             } else {
-                std::vector<wtl::UndirectedEdge> vector;
+                std::vector<wtl::WeightedUndirectedEdge> vector;
                 for (const auto& e : m_Graph[v]) {
-                    vector.push_back(wtl::UndirectedEdge(v, e.w, e.weight));
+                    vector.push_back(wtl::WeightedUndirectedEdge(v, e.w, e.weight));
+                }
+                return vector;
+            }
+        }
+
+        /**
+         * Get all edges in the graph
+         * @return vector of edges
+         */
+        [[nodiscard]] auto allEdges() const {
+            if constexpr (m_Directed) {
+                std::vector<wtl::WeightedDirectedEdge> vector;
+                for (std::size_t v = 0; v < m_VertexCount; v++) {
+                    for (const auto& e : m_Graph[v]) {
+                        vector.push_back(wtl::WeightedDirectedEdge(v, e.w, e.weight));
+                    }
+                }
+                return vector;
+            } else {
+                std::vector<wtl::WeightedUndirectedEdge> vector;
+                for (std::size_t v = 0; v < m_VertexCount; v++) {
+                    for (const auto& e : m_Graph[v]) {
+                        if (e.w >= v) {
+                            vector.push_back(wtl::WeightedUndirectedEdge(v, e.w, e.weight));
+                        }
+                    }
                 }
                 return vector;
             }
@@ -238,7 +264,7 @@ namespace wtl {
             if (outOfBounds(v)) {
                 throw std::invalid_argument("Invalid vertex");
             }
-            return m_Graph[v].count({v,0}) != 0;
+            return m_Graph[v].count({v, 0}) != 0;
         }
 
         /**

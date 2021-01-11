@@ -43,7 +43,7 @@ namespace wtl {
     private:
 
         using DiGraph = wtl::SimpleGraph_Weighted<true>;
-        using DiEdge = wtl::DirectedEdge;
+        using DiEdge = wtl::WeightedDirectedEdge;
         using TopSort = wtl::TopologicalSort;
         using Element = impl::Topological_SP_Element;
 

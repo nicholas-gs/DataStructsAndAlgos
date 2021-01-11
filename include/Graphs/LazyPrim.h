@@ -21,7 +21,7 @@ namespace wtl {
          * Functor for priority queue of weighted edges in MST algorithms.
          */
         struct LazyPrimComparator {
-            bool operator()(const UndirectedEdge& lhs, const UndirectedEdge& rhs) const {
+            bool operator()(const WeightedUndirectedEdge& lhs, const WeightedUndirectedEdge& rhs) const {
                 return rhs < lhs;
             }
         };
@@ -38,7 +38,7 @@ namespace wtl {
     private:
 
         using Graph = SimpleGraph_Weighted<false>;
-        using Edge = UndirectedEdge;
+        using Edge = WeightedUndirectedEdge;
         using Bucket = std::list<Edge>;
         using Compare = impl::LazyPrimComparator;
         using PQ = wtl::PriorityQueue<Edge, Compare>;
@@ -182,7 +182,7 @@ namespace wtl {
             auto iter = m_Buckets.begin();
             std::advance(iter, treeId);
             std::vector <Edge> result;
-            for (const UndirectedEdge& edge : *iter) {
+            for (const WeightedUndirectedEdge& edge : *iter) {
                 result.push_back(edge);
             }
             return result;

@@ -18,7 +18,7 @@ namespace wtl {
     namespace impl {
 
         struct EagerPrimCompare {
-            using Edge = UndirectedEdge;
+            using Edge = WeightedUndirectedEdge;
 
             bool operator()(const Edge& lhs, const Edge& rhs) const {
                 return rhs < lhs;
@@ -31,7 +31,7 @@ namespace wtl {
     private:
 
         using Graph = wtl::SimpleGraph_Weighted<false>;
-        using Edge = UndirectedEdge;
+        using Edge = WeightedUndirectedEdge;
         using Bucket = std::list<Edge>;
         using Compare = impl::EagerPrimCompare;
         using IPQ = wtl::IndexedPriorityQueue<double, Edge, Compare>;
@@ -170,7 +170,7 @@ namespace wtl {
             auto iter = m_Buckets.begin();
             std::advance(iter, treeId);
             std::vector <Edge> result;
-            for (const UndirectedEdge& edge : *iter) {
+            for (const Edge& edge : *iter) {
                 result.push_back(edge);
             }
             return result;
