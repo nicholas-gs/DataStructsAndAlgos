@@ -37,6 +37,7 @@ __A library of Data Structures and Algorithms written using C++17__
 * [DirectedCycle](https://github.com/nicholas-gs/DataStructsAndAlgos/blob/master/include/Graphs/DirectedCycle.h)
 * [EagerDijkstra](https://github.com/nicholas-gs/DataStructsAndAlgos/blob/master/include/Graphs/EagerDijkstra.h)
 * [EagerPrim](https://github.com/nicholas-gs/DataStructsAndAlgos/blob/master/include/Graphs/EagerPrim.h)
+* [FloydWarshall](https://github.com/nicholas-gs/DataStructsAndAlgos/blob/master/include/Graphs/FloydWarshall.h)
 * [Kahn](https://github.com/nicholas-gs/DataStructsAndAlgos/blob/master/include/Graphs/Kahn.h)
 * [Kosaraju](https://github.com/nicholas-gs/DataStructsAndAlgos/blob/master/include/Graphs/Kosaraju.h)
 * [Kruskal](https://github.com/nicholas-gs/DataStructsAndAlgos/blob/master/include/Graphs/Kruskal.h)

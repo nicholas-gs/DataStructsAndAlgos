@@ -59,6 +59,10 @@ A Simple Graph is a graph that does not allow parallel edges between vertices. S
 * __Topological_SP__
 * __BellmanFord__
 
+### All-pairs Shortest Path
+
+* __FloydWarshall__
+
 ## Categorised by Graphs
 
 Many graph processing algorithms only works on certain types of graphs. Below are the algorithms categorised by what kind of graph they can process.
@@ -97,3 +101,4 @@ Also for simplicity, certain algorithms which should work for weighted graphs ar
 * EagerDijkstra
 * Topological_SP
 * BellmanFord
+* FloydWarshall
