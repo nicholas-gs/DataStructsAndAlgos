@@ -28,6 +28,7 @@
 #include "Graphs/Topological_SP_uut.h"
 // #include "Graphs/BellmanFord_uut.h"
 #include "Graphs/Tarjan_uut.h"
+#include "Graphs/FloydWarshall_uut.h"
 
 // Data Structures
 #include "DataStructures/Array_uut.h"
