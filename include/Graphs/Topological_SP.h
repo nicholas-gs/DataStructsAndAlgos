@@ -56,22 +56,22 @@ namespace wtl {
         const std::size_t NULL_VERTEX;
 
         /// Keep track the shortest distance from source to all other vertices
-        double* m_DistTo = nullptr;
+        std::unique_ptr<double[]> m_DistTo;
 
         /// Previous vertex in the shortest tree
-        Element* m_Prev = nullptr;
+        std::unique_ptr<Element[]> m_Prev;
 
         [[nodiscard]] inline bool outOfBounds(std::size_t v) const {
             return v >= m_Size;
         }
 
         void init() {
-            m_DistTo = new double[m_Size];
+            m_DistTo = std::make_unique<double[]>(m_Size);
             for (std::size_t i = 0; i < m_Size; i++) {
                 m_DistTo[i] = std::numeric_limits<double>::infinity();
             }
             m_DistTo[m_Source] = 0.0;
-            m_Prev = new Element[m_Size];
+            m_Prev = std::make_unique<Element[]>(m_Size);
             m_Prev[m_Source].m_V = NULL_VERTEX;
         }
 
@@ -153,10 +153,7 @@ namespace wtl {
             return result;
         }
 
-        ~Topological_SP() {
-            delete[] m_DistTo;
-            delete[] m_Prev;
-        }
+        ~Topological_SP() = default;
 
     };
 

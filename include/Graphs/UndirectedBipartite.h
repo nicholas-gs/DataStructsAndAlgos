@@ -28,7 +28,7 @@ namespace wtl {
         [[nodiscard]] bool bfs(const Graph& graph, std::size_t i, bool colors[], bool visited[]) {
             if (!visited[i]) {
                 visited[i] = true;
-                std::queue<std::size_t> queue;
+                std::queue <std::size_t> queue;
                 queue.push(i);
                 while (!queue.empty()) {
                     std::size_t v = queue.front();
@@ -49,17 +49,19 @@ namespace wtl {
 
         [[nodiscard]] bool check(const Graph& graph) {
             std::size_t size = graph.vertex();
-            bool* colors = new bool[size]{false};
-            bool* visited = new bool[size]{false};
+            std::unique_ptr<bool[]> colors = std::make_unique<bool[]>(size);
+            std::unique_ptr<bool[]> visited = std::make_unique<bool[]>(size);
+            for (std::size_t i = 0; i < size; i++) {
+                colors[i] = false;
+                visited[i] = false;
+            }
             std::optional<bool> result = std::nullopt;
             for (std::size_t i = 0; i < size; i++) {
-                if (!bfs(graph, i, colors, visited)) {
+                if (!bfs(graph, i, colors.get(), visited.get())) {
                     result = false;
                     break;
                 }
             }
-            delete[] colors;
-            delete[] visited;
             return result.has_value() ? false : true;
         }
 

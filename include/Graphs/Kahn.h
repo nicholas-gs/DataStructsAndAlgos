@@ -8,6 +8,8 @@
 #include <stdexcept>
 #include <vector>
 #include <queue>
+#include <memory>
+
 #include "SimpleGraph_Unweighted.h"
 #include "DirectedCycle.h"
 
@@ -28,7 +30,7 @@ namespace wtl {
         void sort(const Graph& graph) {
             std::size_t size = graph.vertex();
             std::queue<std::size_t> queue;
-            auto* inDegrees = new std::size_t[size];
+            std::unique_ptr<std::size_t[]> inDegrees = std::make_unique<std::size_t[]>(size);
             for (std::size_t i = 0; i < size; i++) {
                 inDegrees[i] = graph.inDegree(i);
                 if (inDegrees[i] == 0) {
@@ -46,7 +48,6 @@ namespace wtl {
                     }
                 }
             }
-            delete[] inDegrees;
         }
 
     public:

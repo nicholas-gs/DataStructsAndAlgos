@@ -7,6 +7,8 @@
 #include <cstddef>
 #include <stdexcept>
 #include <utility>
+#include <memory>
+
 #include "SimpleGraph_Unweighted.h"
 
 namespace wtl {
@@ -39,18 +41,22 @@ namespace wtl {
 
         void check(const Graph& graph) {
             std::size_t size = graph.vertex();
-            bool* stack = new bool[size]{false};
-            bool* visited = new bool[size]{false};
+            std::unique_ptr<bool[]> stack = std::make_unique<bool[]>(size);
+            std::unique_ptr<bool[]> visited = std::make_unique<bool[]>(size);
+            for (std::size_t i = 0; i < size; i++) {
+                stack[i] = false;
+                visited[i] = false;
+            }
+            bool* stack_ptr = stack.get();
+            bool* visited_ptr = visited.get();
 
             for (std::size_t i = 0; i < size; i++) {
                 if (m_HasCycle) {
                     break;
                 } else if (!visited[i]) {
-                    dfs(graph, i, stack, visited);
+                    dfs(graph, i, stack_ptr, visited_ptr);
                 }
             }
-            delete[] stack;
-            delete[] visited;
         }
 
     public:

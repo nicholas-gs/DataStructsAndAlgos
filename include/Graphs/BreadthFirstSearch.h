@@ -9,6 +9,8 @@
 #include <queue>
 #include <stack>
 #include <algorithm>
+#include <memory>
+
 #include "SimpleGraph_Unweighted.h"
 
 namespace wtl {
@@ -32,13 +34,13 @@ namespace wtl {
         const std::size_t m_Size;
 
         /// Keep track if vertex was visited during BFS
-        bool* m_Visited = nullptr;
+        std::unique_ptr<bool[]> m_Visited;
 
         /// Keep track of previous vertex visited before this one
-        std::size_t* m_Previous = nullptr;
+        std::unique_ptr<std::size_t[]> m_Previous;
 
         void bfs(const Graph& graph) {
-            std::queue<std::size_t> queue;
+            std::queue <std::size_t> queue;
             queue.push(m_Source);
             m_Visited[m_Source] = true;
             while (!queue.empty()) {
@@ -62,9 +64,8 @@ namespace wtl {
          * @param source
          */
         BreadthFirstSearch(const Graph& graph, std::size_t source)
-                : m_Source(source), m_Size(graph.vertex()) {
-            m_Visited = new bool[m_Size]{false};
-            m_Previous = new std::size_t[m_Size];
+                : m_Source(source), m_Size(graph.vertex()), m_Visited(std::make_unique<bool[]>(m_Size)),
+                  m_Previous(std::make_unique<std::size_t[]>(m_Size)) {
             for (std::size_t i = 0; i < m_Size; i++) {
                 m_Previous[i] = i;
             }
@@ -97,14 +98,14 @@ namespace wtl {
          * @return stl vector of vertices representing the path, starting from the source vertex and ending at
          * vertex v.
          */
-        [[nodiscard]] std::vector<std::size_t> pathTo(std::size_t v) const {
+        [[nodiscard]] std::vector <std::size_t> pathTo(std::size_t v) const {
             if (v < 0 || v >= m_Size) {
                 throw std::invalid_argument("Invalid vertex");
             }
             if (!m_Visited[v]) {
                 throw std::runtime_error("There is no path to vertex");
             }
-            std::vector<std::size_t> path;
+            std::vector <std::size_t> path;
             for (std::size_t w = v; w != m_Source; w = m_Previous[w]) {
                 path.push_back(w);
             }
@@ -116,10 +117,8 @@ namespace wtl {
         /**
          * Destructor
          */
-        ~BreadthFirstSearch() {
-            delete[] m_Visited;
-            delete[] m_Previous;
-        }
+        ~BreadthFirstSearch() = default;
+
     };
 
 }

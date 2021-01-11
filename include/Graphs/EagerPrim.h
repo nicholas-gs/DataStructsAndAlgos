@@ -19,6 +19,7 @@ namespace wtl {
 
         struct EagerPrimCompare {
             using Edge = UndirectedEdge;
+
             bool operator()(const Edge& lhs, const Edge& rhs) const {
                 return rhs < lhs;
             }
@@ -39,10 +40,10 @@ namespace wtl {
         std::size_t m_Size = 0;
 
         /// Keep track of which MST a vertex belongs to
-        std::size_t* m_Id = nullptr;
+        std::unique_ptr<std::size_t[]> m_Id;
 
         /// Store the edges in each MST
-        std::list<Bucket> m_Buckets;
+        std::list <Bucket> m_Buckets;
 
         [[nodiscard]] inline bool outOfBounds(std::size_t v) const noexcept {
             return v < 0 || v >= m_Size;
@@ -87,16 +88,18 @@ namespace wtl {
          * Constructor
          * @param graph
          */
-        explicit EagerPrim(const Graph& graph) : m_Size(graph.vertex()) {
-            m_Id = new std::size_t[m_Size];
-            bool* inMST = new bool[m_Size]{false};
+        explicit EagerPrim(const Graph& graph) : m_Size(graph.vertex()),
+                                                 m_Id(std::make_unique<std::size_t[]>(m_Size)) {
+            std::unique_ptr<bool[]> inMST = std::make_unique<bool[]>(m_Size);
+            for (std::size_t i = 0; i < m_Size; i++) {
+                inMST[i] = false;
+            }
             for (std::size_t i = 0; i < m_Size; i++) {
                 if (!inMST[i]) {
                     m_Buckets.push_back(Bucket());
-                    primProcess(graph, i, inMST);
+                    primProcess(graph, i, inMST.get());
                 }
             }
-            delete[] inMST;
         }
 
         /**
@@ -142,11 +145,11 @@ namespace wtl {
          * @param treeId
          * @return stl vector containing all the vertices in the MST
          */
-        [[nodiscard]] std::vector<std::size_t> vertices(std::size_t treeId) const {
+        [[nodiscard]] std::vector <std::size_t> vertices(std::size_t treeId) const {
             if (treeId >= m_Buckets.size()) {
                 throw std::invalid_argument("Invalid MST id");
             }
-            std::vector<std::size_t> vector;
+            std::vector <std::size_t> vector;
             for (std::size_t i = 0; i < m_Size; i++) {
                 if (m_Id[i] == treeId) {
                     vector.push_back(i);
@@ -160,13 +163,13 @@ namespace wtl {
          * @param treeId
          * @return
          */
-        [[nodiscard]] std::vector<Edge> edges(std::size_t treeId) const {
+        [[nodiscard]] std::vector <Edge> edges(std::size_t treeId) const {
             if (treeId >= m_Buckets.size()) {
                 throw std::invalid_argument("Invalid MST id");
             }
             auto iter = m_Buckets.begin();
             std::advance(iter, treeId);
-            std::vector<Edge> result;
+            std::vector <Edge> result;
             for (const UndirectedEdge& edge : *iter) {
                 result.push_back(edge);
             }
@@ -176,9 +179,7 @@ namespace wtl {
         /**
          * Destructor
          */
-        ~EagerPrim() {
-            delete[] m_Id;
-        }
+        ~EagerPrim() = default;
 
     };
 

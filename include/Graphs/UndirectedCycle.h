@@ -37,15 +37,17 @@ namespace wtl {
         }
 
         void check(const Graph& graph) {
-            bool* visited = new bool[graph.vertex()]{false};
+            std::unique_ptr<bool[]> visited = std::make_unique<bool[]>(graph.vertex());
+            for (std::size_t i = 0; i < graph.vertex(); i++) {
+                visited[i] = false;
+            }
             for (std::size_t i = 0; i < graph.vertex(); i++) {
                 if (m_HasCycle) {
                     break;
                 } else if (!visited[i]) {
-                    dfs(graph, i, i, visited);
+                    dfs(graph, i, i, visited.get());
                 }
             }
-            delete[] visited;
         }
 
     public:

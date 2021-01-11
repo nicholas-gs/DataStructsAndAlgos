@@ -8,6 +8,8 @@
 #include <stdexcept>
 #include <queue>
 #include <algorithm>
+#include <memory>
+
 #include "SimpleGraph_Unweighted.h"
 
 namespace wtl {
@@ -30,7 +32,7 @@ namespace wtl {
         std::size_t m_Count = 0;
 
         /// Keep track of which CC a vertex belongs to.
-        std::size_t* m_Id = nullptr;
+        std::unique_ptr<std::size_t[]> m_Id;
 
         [[nodiscard]] inline bool outOfBounds(std::size_t v) const noexcept {
             return v < 0 || v >= m_Size;
@@ -66,8 +68,7 @@ namespace wtl {
     public:
 
         ConnectedComponents(const Graph& graph)
-                : m_Size(graph.vertex()) {
-            m_Id = new std::size_t[m_Size];
+                : m_Size(graph.vertex()), m_Id(std::make_unique<std::size_t[]>(m_Size)) {
             cc(graph);
         }
 
@@ -122,9 +123,8 @@ namespace wtl {
             return result;
         }
 
-        ~ConnectedComponents() {
-            delete[] m_Id;
-        }
+        ~ConnectedComponents() = default;
+
     };
 
 }

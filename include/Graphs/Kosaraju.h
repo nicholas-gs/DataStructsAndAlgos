@@ -8,6 +8,8 @@
 #include <stdexcept>
 #include <vector>
 #include <stack>
+#include <memory>
+
 #include "SimpleGraph_Unweighted.h"
 #include "DepthFirstOrder.h"
 
@@ -28,7 +30,7 @@ namespace wtl {
         std::size_t m_Count = 0;
 
         /// Keep track of which CC a vertex belongs to.
-        std::size_t* m_Id = nullptr;
+        std::unique_ptr<std::size_t[]> m_Id;
 
         [[nodiscard]] inline bool outOfBounds(std::size_t v) const noexcept {
             return v < 0 || v >= m_Size;
@@ -45,12 +47,15 @@ namespace wtl {
         }
 
         void scc(const Graph& graph) {
-            bool* visited = new bool[m_Size]{false};
+            std::unique_ptr<bool[]> visited = std::make_unique<bool[]>(m_Size);
+            for(std::size_t i = 0; i < m_Size; i++) {
+                visited[i] = false;
+            }
             Graph reversedGraph = graph.reverse();
             DepthFirstOrder<DFS_Order::REVERSE_POSTORDER> depthFirstOrder(reversedGraph);
             for (auto& v : depthFirstOrder.getOrdering()) {
                 if (!visited[v]) {
-                    dfs(graph, v, visited);
+                    dfs(graph, v, visited.get());
                     ++m_Count;
                 }
             }
@@ -63,8 +68,7 @@ namespace wtl {
          * @param graph
          */
         Kosaraju(const Graph& graph)
-                : m_Size(graph.vertex()) {
-            m_Id = new std::size_t[m_Size];
+                : m_Size(graph.vertex()), m_Id(std::make_unique<std::size_t[]>(m_Size)) {
             scc(graph);
         }
 
@@ -106,11 +110,11 @@ namespace wtl {
          * @param ccID ID of the CC
          * @return
          */
-        [[nodiscard]] std::vector<std::size_t> set(std::size_t ccID) const {
+        [[nodiscard]] std::vector <std::size_t> set(std::size_t ccID) const {
             if (ccID < 0 || ccID >= m_Count) {
                 throw std::invalid_argument("CC ID does not exist");
             }
-            std::vector<std::size_t> result;
+            std::vector <std::size_t> result;
             for (std::size_t i = 0; i < m_Size; i++) {
                 if (m_Id[i] == ccID) {
                     result.push_back(i);
@@ -119,9 +123,7 @@ namespace wtl {
             return result;
         }
 
-        ~Kosaraju() {
-            delete[] m_Id;
-        }
+        ~Kosaraju() = default;
 
     };
 
