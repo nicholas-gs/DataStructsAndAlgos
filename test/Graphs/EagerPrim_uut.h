@@ -30,7 +30,7 @@ TEST_CASE("Eager Prim's algorithm on a connected graph") {
     graph.addEdge(3, 6, 45);
     graph.addEdge(4, 7, 18);
 
-    std::vector<wtl::UndirectedEdge<>> mstRef;
+    std::vector<wtl::UndirectedEdge> mstRef;
     mstRef.emplace_back(0, 7, 1);
     mstRef.emplace_back(2, 3, 2);
     mstRef.emplace_back(1, 7, 3);
@@ -48,7 +48,7 @@ TEST_CASE("Eager Prim's algorithm on a connected graph") {
 
 TEST_CASE("Eager Prim's algorithm on a disconnected graph") {
 
-    wtl::SimpleGraph_Weighted<false, int> graph(8);
+    wtl::SimpleGraph_Weighted<false> graph(8);
     graph.addEdge(0, 1, 1);
     graph.addEdge(0, 2, 5);
     graph.addEdge(0, 3, 2);
@@ -62,7 +62,7 @@ TEST_CASE("Eager Prim's algorithm on a disconnected graph") {
 
     SECTION("First MST in MSF") {
         // The correct reference MST
-        std::vector<wtl::UndirectedEdge<int>> mstRef;
+        std::vector<wtl::UndirectedEdge> mstRef;
         mstRef.emplace_back(0, 1, 1);
         mstRef.emplace_back(0, 3, 2);
         mstRef.emplace_back(1, 2, 3);
@@ -75,7 +75,7 @@ TEST_CASE("Eager Prim's algorithm on a disconnected graph") {
 
     SECTION("Second MST in MSF") {
         // The correct reference MST
-        std::vector<wtl::UndirectedEdge<int>> mstRef;
+        std::vector<wtl::UndirectedEdge> mstRef;
         mstRef.emplace_back(4, 5, -5);
 
         REQUIRE(eagerPrim.getMSTWeight(eagerPrim.belongs(5)) == -5);

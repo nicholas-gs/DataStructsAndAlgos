@@ -16,14 +16,13 @@ namespace wtl {
 
     namespace impl {
 
-        template<typename WeightType>
         struct Topological_SP_Element {
             std::size_t m_V;
-            WeightType m_Weight;
+            double m_Weight;
 
             Topological_SP_Element() : m_V(0), m_Weight(0.0) {}
 
-            Topological_SP_Element(std::size_t v, WeightType weight) : m_V(v), m_Weight(weight) {}
+            Topological_SP_Element(std::size_t v, double weight) : m_V(v), m_Weight(weight) {}
 
             Topological_SP_Element(const Topological_SP_Element& other) : m_V(other.m_V), m_Weight(other.m_Weight) {}
 
@@ -40,14 +39,13 @@ namespace wtl {
      * ordering of vertices. Only works for weighted and directed acyclic graphs.
      * @tparam WeightType
      */
-    template<typename WeightType>
     class Topological_SP {
     private:
 
-        using DiGraph = wtl::SimpleGraph_Weighted<true, WeightType>;
-        using DiEdge = wtl::DirectedEdge<WeightType>;
+        using DiGraph = wtl::SimpleGraph_Weighted<true>;
+        using DiEdge = wtl::DirectedEdge;
         using TopSort = wtl::TopologicalSort;
-        using Element = impl::Topological_SP_Element<WeightType>;
+        using Element = impl::Topological_SP_Element;
 
         /// Number of vertices
         const std::size_t m_Size;
@@ -57,12 +55,8 @@ namespace wtl {
 
         const std::size_t NULL_VERTEX;
 
-        /// Since we are not sure if WeightType has numeric infinity, we use an array to indicate it instead.
-        /// true - infinity.
-        bool* m_Infinity = nullptr;
-
         /// Keep track the shortest distance from source to all other vertices
-        WeightType* m_DistTo = nullptr;
+        double* m_DistTo = nullptr;
 
         /// Previous vertex in the shortest tree
         Element* m_Prev = nullptr;
@@ -72,30 +66,23 @@ namespace wtl {
         }
 
         void init() {
-            m_Infinity = new bool[m_Size];
+            m_DistTo = new double[m_Size];
             for (std::size_t i = 0; i < m_Size; i++) {
-                m_Infinity[i] = true;
+                m_DistTo[i] = std::numeric_limits<double>::infinity();
             }
-            m_Infinity[m_Source] = false;
-            m_DistTo = new WeightType[m_Size];
-            m_DistTo[m_Source] = 0;
+            m_DistTo[m_Source] = 0.0;
             m_Prev = new Element[m_Size];
             m_Prev[m_Source].m_V = NULL_VERTEX;
         }
 
-        void process(const DiGraph& digraph, const std::vector<std::size_t>& ordering) {
+        void process(const DiGraph& digraph, const std::vector <std::size_t>& ordering) {
             for (std::size_t v : ordering) {
                 for (const DiEdge& e : digraph.adjacent(v)) {
                     std::size_t to = e.to();
-                    bool discover = !m_Infinity[v] && m_Infinity[to];
-                    bool lower = !m_Infinity[v] && (m_DistTo[v] + e.getWeight()) < m_DistTo[to];
-                    if(discover || lower){
-                        m_DistTo[e.to()] = m_DistTo[v] + e.getWeight();
+                    if (m_DistTo[v] + e.getWeight() < m_DistTo[to]) {
+                        m_DistTo[to] = m_DistTo[v] + e.getWeight();
                         m_Prev[to].m_V = v;
                         m_Prev[to].m_Weight = e.getWeight();
-                    }
-                    if(discover){
-                        m_Infinity[to] = false;
                     }
                 }
             }
@@ -114,7 +101,7 @@ namespace wtl {
             // Throws if the graph is cyclic
             TopSort topSort(ug);
             init();
-            std::vector<std::size_t> ordering = topSort.getOrdering();
+            std::vector <std::size_t> ordering = topSort.getOrdering();
             process(diGraph, ordering);
         }
 
@@ -127,7 +114,7 @@ namespace wtl {
             if (outOfBounds(v)) {
                 throw std::invalid_argument("Invalid vertex");
             }
-            return !m_Infinity[v];
+            return m_DistTo[v] != std::numeric_limits<double>::infinity();
         }
 
         /**
@@ -135,11 +122,11 @@ namespace wtl {
          * @param v
          * @return
          */
-        [[nodiscard]] std::optional<WeightType> distanceTo(std::size_t v) const {
+        [[nodiscard]] std::optional<double> distanceTo(std::size_t v) const {
             if (outOfBounds(v)) {
                 throw std::invalid_argument("Invalid vertex");
             }
-            if (!m_Infinity[v]) {
+            if (m_DistTo[v] != std::numeric_limits<double>::infinity()) {
                 return m_DistTo[v];
             }
             return std::nullopt;
@@ -154,10 +141,10 @@ namespace wtl {
             if (outOfBounds(v)) {
                 throw std::invalid_argument("Invalid vertex");
             }
-            if (m_Infinity[v]) {
+            if (m_DistTo[v] == std::numeric_limits<double>::infinity()) {
                 throw std::runtime_error("No path to specified vertex");
             }
-            std::vector<DiEdge> result;
+            std::vector <DiEdge> result;
             while (m_Prev[v].m_V != NULL_VERTEX) {
                 result.emplace_back(m_Prev[v].m_V, v, m_Prev[v].m_Weight);
                 v = m_Prev[v].m_V;
@@ -167,7 +154,6 @@ namespace wtl {
         }
 
         ~Topological_SP() {
-            delete[] m_Infinity;
             delete[] m_DistTo;
             delete[] m_Prev;
         }

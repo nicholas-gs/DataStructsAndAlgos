@@ -18,14 +18,13 @@ namespace wtl {
 
     namespace impl {
 
-        template<typename WeightType>
         struct LazyDijkstra_Element {
             std::size_t m_V;
-            WeightType m_Weight;
+            double m_Weight;
 
             LazyDijkstra_Element() : m_V(0), m_Weight(0.0) {}
 
-            LazyDijkstra_Element(std::size_t v, WeightType weight) : m_V(v), m_Weight(weight) {}
+            LazyDijkstra_Element(std::size_t v, double weight) : m_V(v), m_Weight(weight) {}
 
             LazyDijkstra_Element(const LazyDijkstra_Element& other) : m_V(other.m_V), m_Weight(other.m_Weight) {}
 
@@ -45,12 +44,12 @@ namespace wtl {
      * @tparam directed
      * @tparam WeightType
      */
-    template<bool directed, typename WeightType>
+    template<bool directed>
     class LazyDijkstra {
     private:
 
-        using Graph = SimpleGraph_Weighted<directed, WeightType>;
-        using Element = impl::LazyDijkstra_Element<WeightType>;
+        using Graph = SimpleGraph_Weighted<directed>;
+        using Element = impl::LazyDijkstra_Element;
         using PQ = wtl::PriorityQueue<Element>;
 
         /// Number of vertices
@@ -61,12 +60,8 @@ namespace wtl {
 
         const std::size_t NULL_VERTEX;
 
-        /// Since we are not sure if WeightType has numeric infinity, we use an array to indicate it instead.
-        /// true - infinity.
-        bool* m_Infinity = nullptr;
-
         /// Keep track the shortest distance from source to all other vertices
-        WeightType* m_DistTo = nullptr;
+        double* m_DistTo = nullptr;
 
         /// Previous vertex in the shortest tree
         Element* m_Prev = nullptr;
@@ -79,14 +74,13 @@ namespace wtl {
             for (const auto& e : graph.adjacent(v)) {
                 auto[v1, v2] = e.vertices();
                 std::size_t other = v1 == v ? v2 : v1;
-                WeightType pathWeight = m_DistTo[v] + e.getWeight();
-                if (m_Infinity[other] || (pathWeight < m_DistTo[other])) {
+                double pathWeight = m_DistTo[v] + e.getWeight();
+                if (pathWeight < m_DistTo[other]) {
                     m_DistTo[other] = pathWeight;
                     m_Prev[other].m_V = v;
                     m_Prev[other].m_Weight = e.getWeight();
                     pq.emplace(other, pathWeight);
                 }
-                m_Infinity[other] = false;
             }
         }
 
@@ -109,12 +103,10 @@ namespace wtl {
          */
         LazyDijkstra(const Graph& graph, std::size_t source)
                 : m_Size(graph.vertex()), m_Source(source), NULL_VERTEX(graph.vertex()) {
-            m_Infinity = new bool[m_Size];
+            m_DistTo = new double[m_Size];
             for (std::size_t i = 0; i < m_Size; i++) {
-                m_Infinity[i] = true;
+                m_DistTo[i] = std::numeric_limits<double>::infinity();
             }
-            m_Infinity[m_Source] = false;
-            m_DistTo = new WeightType[m_Size];
             m_DistTo[m_Source] = 0.0;
             m_Prev = new Element[m_Size];
             m_Prev[m_Source].m_V = NULL_VERTEX;
@@ -130,7 +122,7 @@ namespace wtl {
             if (outOfBounds(v)) {
                 throw std::invalid_argument("Invalid vertex");
             }
-            return !m_Infinity[v];
+            return (m_DistTo[v] != std::numeric_limits<double>::infinity());
         }
 
         /**
@@ -138,11 +130,11 @@ namespace wtl {
          * @param v
          * @return
          */
-        [[nodiscard]] std::optional<WeightType> distanceTo(std::size_t v) const {
+        [[nodiscard]] std::optional<double> distanceTo(std::size_t v) const {
             if (outOfBounds(v)) {
                 throw std::invalid_argument("Invalid vertex");
             }
-            if (!m_Infinity[v]) {
+            if (m_DistTo[v] != std::numeric_limits<double>::infinity()) {
                 return m_DistTo[v];
             }
             return std::nullopt;
@@ -157,12 +149,12 @@ namespace wtl {
             if (outOfBounds(v)) {
                 throw std::invalid_argument("Invalid vertex");
             }
-            if (m_Infinity[v]) {
+            if (m_DistTo[v] == std::numeric_limits<double>::infinity()) {
                 throw std::runtime_error("No path to specified vertex");
             }
             if constexpr (!directed) {
-                using Edge = wtl::UndirectedEdge<WeightType>;
-                std::vector<Edge> result;
+                using Edge = wtl::UndirectedEdge;
+                std::vector <Edge> result;
                 while (m_Prev[v].m_V != NULL_VERTEX) {
                     result.emplace_back(m_Prev[v].m_V, v, m_Prev[v].m_Weight);
                     v = m_Prev[v].m_V;
@@ -170,8 +162,8 @@ namespace wtl {
                 std::reverse(result.begin(), result.end());
                 return result;
             } else {
-                using Edge = wtl::DirectedEdge<WeightType>;
-                std::vector<Edge> result;
+                using Edge = wtl::DirectedEdge;
+                std::vector <Edge> result;
                 while (m_Prev[v].m_V != NULL_VERTEX) {
                     result.emplace_back(m_Prev[v].m_V, v, m_Prev[v].m_Weight);
                     v = m_Prev[v].m_V;
@@ -186,7 +178,6 @@ namespace wtl {
          */
         ~LazyDijkstra() {
             delete[] m_Prev;
-            delete[] m_Infinity;
             delete[] m_DistTo;
         }
 

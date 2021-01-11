@@ -13,7 +13,7 @@
 #include "../../include/Graphs/Topological_SP.h"
 
 TEST_CASE("Shortest path using Topological_SP (1)") {
-    wtl::SimpleGraph_Weighted<true, int> graph(8);
+    wtl::SimpleGraph_Weighted<true> graph(8);
     graph.addEdge(0, 1, 5);
     graph.addEdge(0, 7, 8);
     graph.addEdge(0, 4, 9);
@@ -32,7 +32,7 @@ TEST_CASE("Shortest path using Topological_SP (1)") {
     graph.addEdge(7, 2, 7);
 
     wtl::Topological_SP sp(graph, 0);
-    using Edge = wtl::DirectedEdge<int>;
+    using Edge = wtl::DirectedEdge;
 
     SECTION("Getting shortest path between 2 vertices that exists (1)") {
         std::vector<Edge> refSP;
@@ -57,7 +57,7 @@ TEST_CASE("Shortest path using Topological_SP (1)") {
 }
 
 TEST_CASE("Shortest Path using Topological_SP (2)") {
-    wtl::SimpleGraph_Weighted<true, int> graph(8);
+    wtl::SimpleGraph_Weighted<true> graph(8);
     graph.addEdge(0, 1, 3);
     graph.addEdge(0, 2, 6);
     graph.addEdge(1, 4, 11);
@@ -73,7 +73,7 @@ TEST_CASE("Shortest Path using Topological_SP (2)") {
     graph.addEdge(6, 7, 2);
 
     wtl::Topological_SP sp(graph, 0);
-    using Edge = wtl::DirectedEdge<int>;
+    using Edge = wtl::DirectedEdge;
 
     SECTION("Getting shortest path between 2 vertices that exists (1)") {
         std::vector<Edge> refSP;
@@ -91,7 +91,7 @@ TEST_CASE("Shortest Path using Topological_SP (2)") {
 
 TEST_CASE("Shortest Path using Topological_SP (3)") {
 
-    wtl::SimpleGraph_Weighted<true, double> graph(8);
+    wtl::SimpleGraph_Weighted<true> graph(8);
     graph.addEdge(5, 4, 0.35);
     graph.addEdge(4, 7, 0.37);
     graph.addEdge(5, 7, 0.28);
@@ -106,7 +106,7 @@ TEST_CASE("Shortest Path using Topological_SP (3)") {
     graph.addEdge(6, 0, 0.58);
     graph.addEdge(6, 4, 0.93);
 
-    using Edge = wtl::DirectedEdge<double>;
+    using Edge = wtl::DirectedEdge;
 
     SECTION("Getting shortest path between 2 vertices that exists (1)") {
         wtl::Topological_SP sp(graph, 5);

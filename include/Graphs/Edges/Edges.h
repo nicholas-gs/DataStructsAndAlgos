@@ -14,13 +14,12 @@ namespace wtl {
      * Base class for weighted undirected edge and weighted directed edge.
      * @tparam WeightType
      */
-    template<typename WeightType>
     class EdgeBase {
     protected:
 
         std::size_t m_V;
         std::size_t m_W;
-        WeightType m_Weight;
+        double m_Weight;
 
     public:
 
@@ -32,10 +31,10 @@ namespace wtl {
          * @param w
          * @param weight
          */
-        EdgeBase(std::size_t v, std::size_t w, WeightType weight)
+        EdgeBase(std::size_t v, std::size_t w, double weight)
                 : m_V(v), m_W(w), m_Weight(weight) {}
 
-        [[nodiscard]] WeightType getWeight() const noexcept {
+        [[nodiscard]] double getWeight() const noexcept {
             return m_Weight;
         }
 
@@ -43,7 +42,7 @@ namespace wtl {
             return m_Weight < other.m_Weight;
         }
 
-        [[nodiscard]] std::pair<std::size_t, std::size_t> vertices() const noexcept {
+        [[nodiscard]] std::pair <std::size_t, std::size_t> vertices() const noexcept {
             return {m_V, m_W};
         }
 
@@ -53,25 +52,24 @@ namespace wtl {
      * Undirected weighted edge
      * @tparam WeightType
      */
-    template<typename WeightType = double>
-    class UndirectedEdge : public EdgeBase<WeightType> {
+    class UndirectedEdge : public EdgeBase {
     public:
 
         UndirectedEdge() = default;
 
-        UndirectedEdge(std::size_t v, std::size_t w, WeightType weight)
-                : EdgeBase<WeightType>(v, w, weight) {}
+        UndirectedEdge(std::size_t v, std::size_t w, double weight)
+                : EdgeBase(v, w, weight) {}
 
         [[nodiscard]] std::size_t either() const noexcept {
-            return EdgeBase<WeightType>::m_V;
+            return EdgeBase::m_V;
         }
 
         [[nodiscard]] std::size_t other(std::size_t v) const {
-            if (v == EdgeBase<WeightType>::m_V) {
-                return EdgeBase<WeightType>::m_W;
+            if (v == EdgeBase::m_V) {
+                return EdgeBase::m_W;
             }
-            if (v == EdgeBase<WeightType>::m_W) {
-                return EdgeBase<WeightType>::m_V;
+            if (v == EdgeBase::m_W) {
+                return EdgeBase::m_V;
             }
             throw std::invalid_argument("Invalid vertex");
         }
@@ -88,21 +86,20 @@ namespace wtl {
      * Directed weighted edge
      * @tparam WeightType
      */
-    template<typename WeightType = double>
-    class DirectedEdge : public EdgeBase<WeightType> {
+    class DirectedEdge : public EdgeBase {
     public:
 
         DirectedEdge() = default;
 
-        DirectedEdge(std::size_t v, std::size_t w, WeightType weight)
-                : EdgeBase<WeightType>(v, w, weight) {}
+        DirectedEdge(std::size_t v, std::size_t w, double weight)
+                : EdgeBase(v, w, weight) {}
 
         [[nodiscard]] std::size_t from() const noexcept {
-            return EdgeBase<WeightType>::m_V;
+            return EdgeBase::m_V;
         }
 
         [[nodiscard]] std::size_t to() const noexcept {
-            return EdgeBase<WeightType>::m_W;
+            return EdgeBase::m_W;
         }
 
         bool operator==(const DirectedEdge& other) const {

@@ -17,9 +17,8 @@ namespace wtl {
 
     namespace impl {
 
-        template<typename WeightType>
         struct EagerPrimCompare {
-            using Edge = UndirectedEdge<WeightType>;
+            using Edge = UndirectedEdge;
             bool operator()(const Edge& lhs, const Edge& rhs) const {
                 return rhs < lhs;
             }
@@ -27,15 +26,14 @@ namespace wtl {
 
     }
 
-    template<typename WeightType>
     class EagerPrim {
     private:
 
-        using Graph = wtl::SimpleGraph_Weighted<false, WeightType>;
-        using Edge = UndirectedEdge<WeightType>;
+        using Graph = wtl::SimpleGraph_Weighted<false>;
+        using Edge = UndirectedEdge;
         using Bucket = std::list<Edge>;
-        using Compare = impl::EagerPrimCompare<WeightType>;
-        using IPQ = wtl::IndexedPriorityQueue<WeightType, Edge, Compare>;
+        using Compare = impl::EagerPrimCompare;
+        using IPQ = wtl::IndexedPriorityQueue<double, Edge, Compare>;
 
         /// Number of vertices in the graph
         std::size_t m_Size = 0;
@@ -118,7 +116,7 @@ namespace wtl {
             if (id < 0 || id >= m_Buckets.size()) {
                 throw std::invalid_argument("Invalid MST id");
             }
-            WeightType weight = 0;
+            double weight = 0;
             auto iter = m_Buckets.begin();
             std::advance(iter, id);
             for (const Edge& edge : (*iter)) {
@@ -169,7 +167,7 @@ namespace wtl {
             auto iter = m_Buckets.begin();
             std::advance(iter, treeId);
             std::vector<Edge> result;
-            for (const UndirectedEdge<WeightType>& edge : *iter) {
+            for (const UndirectedEdge& edge : *iter) {
                 result.push_back(edge);
             }
             return result;

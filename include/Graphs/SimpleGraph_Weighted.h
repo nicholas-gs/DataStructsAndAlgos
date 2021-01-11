@@ -21,14 +21,12 @@ namespace wtl {
 
         /**
          * Internal Node representation for the Graph
-         * @tparam WeightType
          */
-        template<typename WeightType>
         struct SimpleGraph_Weighted_Node {
             std::size_t w;
-            WeightType weight;
+            double weight;
 
-            SimpleGraph_Weighted_Node(std::size_t w, WeightType weight)
+            SimpleGraph_Weighted_Node(std::size_t w, double weight)
                     : w(w), weight(weight) {}
 
             bool operator==(const SimpleGraph_Weighted_Node& other) const noexcept {
@@ -53,14 +51,13 @@ namespace wtl {
      * A Simple Graph is a graph that does not allow parallel edges between vertices. Self-loops also allowed.
      * The graphs can be either directed or undirected.
      * @tparam m_Directed If the graph is directed or undirected
-     * @tparam WeightType Type of weight. Must be a arithmetic type
      */
-    template<bool m_Directed, typename WeightType = double>
+    template<bool m_Directed>
     class SimpleGraph_Weighted {
     private:
 
         using UnweightedGraph = SimpleGraph_Unweighted<m_Directed>;
-        using Node = impl::SimpleGraph_Weighted_Node<WeightType>;
+        using Node = impl::SimpleGraph_Weighted_Node;
         using Compare = impl::SimpleGraph_Weighted_Compare<Node>;
         using Bucket = std::set<Node, Compare>;
         using AdjList = std::unique_ptr<Bucket[]>;
@@ -91,7 +88,6 @@ namespace wtl {
         */
         explicit SimpleGraph_Weighted(std::size_t vertexCount)
                 : m_VertexCount(vertexCount) {
-            static_assert(std::is_arithmetic_v<WeightType>, "WeightType must be arithmetic type");
             if (m_VertexCount < 1) {
                 throw std::invalid_argument("Graph cannot have less than 1 vertex");
             }
@@ -164,15 +160,15 @@ namespace wtl {
                 throw std::invalid_argument("Invalid vertex");
             }
             if constexpr (m_Directed) {
-                std::vector<wtl::DirectedEdge<WeightType>> vector;
+                std::vector<wtl::DirectedEdge> vector;
                 for (const auto& e : m_Graph[v]) {
-                    vector.push_back(wtl::DirectedEdge<WeightType>(v, e.w, e.weight));
+                    vector.push_back(wtl::DirectedEdge(v, e.w, e.weight));
                 }
                 return vector;
             } else {
-                std::vector<wtl::UndirectedEdge<WeightType>> vector;
+                std::vector<wtl::UndirectedEdge> vector;
                 for (const auto& e : m_Graph[v]) {
-                    vector.push_back(wtl::UndirectedEdge<WeightType>(v, e.w, e.weight));
+                    vector.push_back(wtl::UndirectedEdge(v, e.w, e.weight));
                 }
                 return vector;
             }
@@ -197,7 +193,7 @@ namespace wtl {
          * @param w
          * @return
          */
-        [[nodiscard]] std::optional<WeightType> getEdgeWeight(std::size_t v, std::size_t w) const {
+        [[nodiscard]] std::optional<double> getEdgeWeight(std::size_t v, std::size_t w) const {
             if (outOfBounds(v) || outOfBounds(w)) {
                 throw std::invalid_argument("Invalid vertex");
             }
@@ -216,18 +212,18 @@ namespace wtl {
          * @param weight
          * @return
          */
-        bool updateWeight(std::size_t v, std::size_t w, WeightType weight) {
+        bool updateWeight(std::size_t v, std::size_t w, double weight) {
             if (outOfBounds(v) || outOfBounds(w)) {
                 throw std::invalid_argument("Invalid vertex");
             }
-            auto it = m_Graph[v].find({w, 0});
+            auto it = m_Graph[v].find({w, 0.0});
             if (it == m_Graph[v].end()) {
                 return false;
             }
             m_Graph[v].erase(it);
             m_Graph[v].emplace(w, weight);
             if (!m_Directed) {
-                m_Graph[w].erase({v, 0});
+                m_Graph[w].erase({v, 0.0});
                 m_Graph[w].emplace(v, weight);
             }
             return true;
@@ -242,7 +238,7 @@ namespace wtl {
             if (outOfBounds(v)) {
                 throw std::invalid_argument("Invalid vertex");
             }
-            return m_Graph[v].count(v) != 0;
+            return m_Graph[v].count({v,0}) != 0;
         }
 
         /**
@@ -326,7 +322,7 @@ namespace wtl {
          * @param w
          * @return True if edge was inserted, false if not.
          */
-        bool addEdge(std::size_t v, std::size_t w, WeightType weight) {
+        bool addEdge(std::size_t v, std::size_t w, double weight) {
             if (outOfBounds(v) || outOfBounds(w)) {
                 throw std::invalid_argument("Invalid vertex");
             }

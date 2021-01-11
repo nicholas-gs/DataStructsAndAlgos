@@ -20,12 +20,11 @@ namespace wtl {
      * is disconnected.
      * @tparam WeightType
      */
-    template<typename WeightType>
     class Kruskal {
     private:
 
-        using Graph = SimpleGraph_Weighted<false, WeightType>;
-        using Edge = UndirectedEdge<WeightType>;
+        using Graph = SimpleGraph_Weighted<false>;
+        using Edge = UndirectedEdge;
         using Sort = wtl::MergeSort<Edge>;
         using UF = wtl::UnionFind;
         using Bucket = std::vector<Edge>;

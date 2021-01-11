@@ -19,11 +19,9 @@ namespace wtl {
 
         /**
          * Functor for priority queue of weighted edges in MST algorithms.
-         * @tparam WeightType
          */
-        template<typename WeightType>
         struct LazyPrimComparator {
-            bool operator()(const UndirectedEdge<WeightType>& lhs, const UndirectedEdge<WeightType>& rhs) const {
+            bool operator()(const UndirectedEdge& lhs, const UndirectedEdge& rhs) const {
                 return rhs < lhs;
             }
         };
@@ -36,14 +34,13 @@ namespace wtl {
      * The algorithm works with graphs with negative weights, as well as disconnected graphs.
      * For disconnected graphs, it finds the minimum spanning forest (MSF) instead of minimum spanning tree (MST).
      */
-    template<typename WeightType>
     class LazyPrim {
     private:
 
-        using Graph = SimpleGraph_Weighted<false, WeightType>;
-        using Edge = UndirectedEdge<WeightType>;
+        using Graph = SimpleGraph_Weighted<false>;
+        using Edge = UndirectedEdge;
         using Bucket = std::list<Edge>;
-        using Compare = impl::LazyPrimComparator<WeightType>;
+        using Compare = impl::LazyPrimComparator;
         using PQ = wtl::PriorityQueue<Edge, Compare>;
 
         /// Number of vertices in the graph
@@ -132,7 +129,7 @@ namespace wtl {
             if (id < 0 || id >= m_Buckets.size()) {
                 throw std::invalid_argument("Invalid MST id");
             }
-            WeightType weight = 0;
+            double weight = 0;
             auto iter = m_Buckets.begin();
             std::advance(iter, id);
             for (const Edge& edge : (*iter)) {
@@ -183,7 +180,7 @@ namespace wtl {
             auto iter = m_Buckets.begin();
             std::advance(iter, treeId);
             std::vector<Edge> result;
-            for (const UndirectedEdge<WeightType>& edge : *iter) {
+            for (const UndirectedEdge& edge : *iter) {
                 result.push_back(edge);
             }
             return result;

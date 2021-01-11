@@ -26,7 +26,7 @@ TEST_CASE("Lazy Dijkstra's Algorithm on directed graph (1)") {
     graph.addEdge(3, 5, 6);
     graph.addEdge(4, 5, 1);
 
-    using Edge = wtl::DirectedEdge<>;
+    using Edge = wtl::DirectedEdge  ;
 
     SECTION("Getting shortest path between 2 vertices that exists (1)") {
         std::vector<Edge> refSP;
@@ -57,7 +57,7 @@ TEST_CASE("Lazy Dijkstra's Algorithm on directed graph (1)") {
 }
 
 TEST_CASE("Lazy Dijkstra's Algorithm on directed graph (2)") {
-    wtl::SimpleGraph_Weighted<true, int> graph(8);
+    wtl::SimpleGraph_Weighted<true> graph(8);
     graph.addEdge(0, 1, 5);
     graph.addEdge(0, 7, 8);
     graph.addEdge(0, 4, 9);
@@ -75,7 +75,7 @@ TEST_CASE("Lazy Dijkstra's Algorithm on directed graph (2)") {
     graph.addEdge(7, 5, 6);
     graph.addEdge(7, 2, 7);
 
-    using Edge = wtl::DirectedEdge<int>;
+    using Edge = wtl::DirectedEdge;
 
     SECTION("Getting shortest path between 2 vertices that exists (1)") {
         std::vector<Edge> refSP;
