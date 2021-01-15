@@ -19,7 +19,7 @@ TEST_CASE("BiMap Test") {
 
     SECTION("Checking if element exists") {
         for (std::size_t i = 0; i < 10; i++) {
-            REQUIRE(biMap.find(std::to_string(i)).value() == i);
+            REQUIRE(biMap.find(std::to_string(i)).value() == static_cast<int>(i));
             REQUIRE(biMap.find(i).value().get() == std::to_string(i));
         }
         REQUIRE(biMap.find(100) == std::nullopt);
@@ -31,7 +31,7 @@ TEST_CASE("BiMap Test") {
         biMap.erase(9);
         biMap.erase("8");
         for (std::size_t i = 0; i < 8; i++) {
-            REQUIRE(biMap.find(std::to_string(i)).value() == i);
+            REQUIRE(biMap.find(std::to_string(i)).value() == static_cast<int>(i));
             REQUIRE(biMap.find(i).value().get() == std::to_string(i));
         }
         REQUIRE(biMap.find(8) == std::nullopt);

@@ -7,6 +7,7 @@
 #include <vector>
 #include <cstddef>
 #include <type_traits>
+#include <memory>
 
 namespace wtl {
 
@@ -24,8 +25,11 @@ namespace wtl {
     private:
 
         static void sortIn(std::vector<T>& vector, const T& min, const T& max, Order ascending) {
-            T range = max - min + 1;
-            T buckets[range] = {0};
+            std::size_t range = static_cast<std::size_t>(max - min + 1);
+            std::unique_ptr<T[]> buckets = std::make_unique<T[]>(range);
+            for(std::size_t i =0; i < range; i++) {
+                buckets[i] = 0;
+            }
 
             for (const T& element : vector) {
                 buckets[element - min] += 1;

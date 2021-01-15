@@ -70,7 +70,7 @@ namespace wtl {
             // Construct the rest of the sparse table
             for (std::size_t i = 1; i <= p; i++) {
                 std::size_t jump = pow(2, i - 1);
-                for (int j = 0; j < m_Size; j++) {
+                for (std::size_t j = 0; j < m_Size; j++) {
                     std::size_t secondIndex = j + jump;
                     if (secondIndex < m_Size) {
                         T val = (this->*m_OpFunc)(i - 1, j, i - 1, secondIndex);

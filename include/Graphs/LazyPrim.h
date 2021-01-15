@@ -127,7 +127,7 @@ namespace wtl {
          * @param id
          * @return
          */
-        [[nodiscard]] std::size_t getMSTWeight(std::size_t id) const {
+        [[nodiscard]] double getMSTWeight(std::size_t id) const {
             if (id < 0 || id >= m_Buckets.size()) {
                 throw std::invalid_argument("Invalid MST id");
             }

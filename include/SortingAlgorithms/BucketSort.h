@@ -9,6 +9,7 @@
 #include <cmath>
 #include <type_traits>
 #include <algorithm>
+#include <memory>
 
 
 namespace wtl {
@@ -33,7 +34,7 @@ namespace wtl {
         sortIn(std::vector<T>& vector, std::vector<T>& originalVector, std::size_t startPos, T min, T max, bool neg) {
             std::size_t numberOfBuckets = std::ceil(std::sqrt(vector.size()));
             // Create an array of vectors, where each vector is a bucket
-            std::vector<T> buckets[numberOfBuckets];
+            std::unique_ptr<std::vector<T>[]> buckets = std::make_unique<std::vector<T>[]>(numberOfBuckets);
             double bucketSize = ((double) max - (double) min) / (double) numberOfBuckets;
 
             for (const T& val : vector) {

@@ -56,10 +56,13 @@ namespace wtl {
         }
 
         void cc(const Graph& graph) {
-            bool visited[m_Size]{false};
+            std::unique_ptr<bool[]> visited = std::make_unique<bool[]>(m_Size);
+            for(std::size_t i = 0; i < m_Size; i++) {
+                visited[i] = false;
+            }
             for (std::size_t i = 0; i < m_Size; i++) {
                 if (!visited[i]) {
-                    bfs(graph, i, visited);
+                    bfs(graph, i, visited.get());
                     m_Count++;
                 }
             }

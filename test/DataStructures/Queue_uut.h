@@ -20,7 +20,7 @@ TEST_CASE("Queue with int") {
 
     SECTION("Removing elements from queue") {
         for (std::size_t i = 0; i < size; i++) {
-            REQUIRE(queue.peek() == i);
+            REQUIRE(queue.peek() == static_cast<int>(i));
             queue.dequeue();
         }
         REQUIRE(queue.isEmpty() == true);

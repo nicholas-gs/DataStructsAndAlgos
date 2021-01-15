@@ -7,6 +7,7 @@
 #include "impl/SortingAlgorithmsImpl.h"
 #include <vector>
 #include <cstddef>
+#include <memory>
 
 namespace wtl {
 
@@ -34,8 +35,8 @@ namespace wtl {
             std::size_t leftArrLength = midPos - startPos + 1;
             std::size_t rightArrLength = endPos - midPos;
 
-            T leftArr[leftArrLength];
-            T rightArr[rightArrLength];
+            std::unique_ptr<T[]> leftArr = std::make_unique<T[]>(leftArrLength);
+            std::unique_ptr<T[]> rightArr = std::make_unique<T[]>(rightArrLength);
 
             for (std::size_t i = 0; i < leftArrLength; i++) {
                 leftArr[i] = std::move(vector[startPos + i]);
