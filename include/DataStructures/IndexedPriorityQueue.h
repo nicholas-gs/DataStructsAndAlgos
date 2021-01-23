@@ -144,7 +144,7 @@ namespace wtl {
             if (isEmpty()) {
                 throw std::runtime_error("Indexed Priority Queue is empty");
             }
-            return {m_BiMap.find(m_InverseMap[0], BiMap::bimap_right_tag).value(), m_Heap[0]};
+            return {m_BiMap.find(m_InverseMap[0], wtl::bimap_right_tag).value(), m_Heap[0]};
         }
 
         /**
@@ -155,7 +155,7 @@ namespace wtl {
             if (isEmpty()) {
                 throw std::runtime_error("Indexed Priority Queue is empty");
             }
-            return {m_BiMap.find(m_InverseMap[0], BiMap::bimap_right_tag).value(), m_Heap[0]};
+            return {m_BiMap.find(m_InverseMap[0], wtl::bimap_right_tag).value(), m_Heap[0]};
         }
 
         /**
@@ -164,7 +164,7 @@ namespace wtl {
          * @return True if it exists, false if not
          */
         [[nodiscard]] bool exists(const K& key) const {
-            return m_BiMap.contains(key, BiMap::bimap_left_tag);
+            return m_BiMap.contains(key, wtl::bimap_left_tag);
         }
 
         /**
@@ -173,7 +173,7 @@ namespace wtl {
         * @return const reference to the element
         */
         [[nodiscard]] const V& find(const K& key) const {
-            auto result = m_BiMap.find(key, BiMap::bimap_left_tag);
+            auto result = m_BiMap.find(key, wtl::bimap_left_tag);
             if (!result.has_value()) {
                 throw std::invalid_argument("Key not found");
             }
@@ -188,7 +188,7 @@ namespace wtl {
          * @return
          */
         [[nodiscard]] std::size_t position(const K& key) const {
-            auto result = m_BiMap.find(key, BiMap::bimap_left_tag);
+            auto result = m_BiMap.find(key, wtl::bimap_left_tag);
             if (!result.has_value()) {
                 throw std::invalid_argument("Key not found");
             }
@@ -262,7 +262,7 @@ namespace wtl {
             if (isEmpty()) {
                 throw std::runtime_error("IPQ is empty");
             }
-            m_BiMap.erase(m_InverseMap[0], BiMap::bimap_right_tag);
+            m_BiMap.erase(m_InverseMap[0], wtl::bimap_right_tag);
             swap(0, m_Heap.size() - 1);
             m_Heap.pop_back();
             m_InverseMap.pop_back();
@@ -275,7 +275,7 @@ namespace wtl {
          * @param value
          */
         void update(const K& key, const V& value) {
-            auto result = m_BiMap.find(key, BiMap::bimap_left_tag);
+            auto result = m_BiMap.find(key, wtl::bimap_left_tag);
             if (!result.has_value()) {
                 throw std::invalid_argument("Key not found");
             }
@@ -291,7 +291,7 @@ namespace wtl {
          * @param value
          */
         void update(const K& key, V&& value) {
-            auto result = m_BiMap.find(key, BiMap::bimap_left_tag);
+            auto result = m_BiMap.find(key, wtl::bimap_left_tag);
             if (!result.has_value()) {
                 throw std::invalid_argument("Key not found");
             }
@@ -306,7 +306,7 @@ namespace wtl {
          * @param key
          */
         void remove(const K& key) {
-            auto result = m_BiMap.find(key, BiMap::bimap_left_tag);
+            auto result = m_BiMap.find(key, wtl::bimap_left_tag);
             if (!result.has_value()) {
                 throw std::invalid_argument("Key not found");
             }
@@ -316,7 +316,7 @@ namespace wtl {
             m_InverseMap.pop_back();
             sink(pos);
             bubbleUp(pos);
-            m_BiMap.erase(key, BiMap::bimap_left_tag);
+            m_BiMap.erase(key, wtl::bimap_left_tag);
         }
 
         /**

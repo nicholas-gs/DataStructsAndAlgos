@@ -12,6 +12,18 @@
 namespace wtl {
 
     /**
+     * Tag dispatch for left type of BiMap
+     */
+    struct BiMap_Left_Tag {
+    } bimap_left_tag;
+
+    /**
+     * Tag dispatch for right type of BiMap
+     */
+    struct BiMap_Right_Tag {
+    } bimap_right_tag;
+
+    /**
      * A BiMap is a bidirectional map that allows for 2-way mapping between elements of types A and B.
      * Since both elements in the pair acts as the "key", they thus have to be both unique. That is,
      * no 2 elements of type A can be the same, and no 2 elements of type B can be the same.
@@ -38,11 +50,6 @@ namespace wtl {
         RightMap m_RightMap;
 
     public:
-
-        static inline struct BiMap_Left_Tag {
-        } bimap_left_tag;
-        static inline struct BiMap_Right_Tag {
-        } bimap_right_tag;
 
         /**
          * Default constructor
