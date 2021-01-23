@@ -29,10 +29,7 @@ namespace wtl {
          * @return true if invalid index, false if not
          */
         [[nodiscard]] bool outOfBounds(std::size_t index) const noexcept {
-            if (index < 0 || index >= m_Size) {
-                return true;
-            }
-            return false;
+            return index >= m_Size;
         }
 
     public:
@@ -40,26 +37,35 @@ namespace wtl {
         /**
          * Constructor
          */
-        Array() {
-            static_assert(m_Size > 0, "Size of array cannot be less than 1");
-        }
+        Array() = default;
 
         /**
          * Constructor
          * @param val Initial value to fill array
          */
-        explicit Array(T val) {
-            static_assert(m_Size > 0, "Size of array cannot be less than 1");
+        explicit Array(const T& val) {
             fill(val);
+        }
+
+        template<typename ...Ts>
+        constexpr Array(Ts&& ... args) : m_Arr{std::forward<Ts>(args)...} {}
+
+        /**
+         * Copy constructor
+         * @param other
+         */
+        Array(const Array& other) {
+            std::size_t i = 0;
+            for (const T& element : other.m_Arr) {
+                m_Arr[i++] = element;
+            }
         }
 
         /**
          * Copy constructor
          * @param other
          */
-        Array(const Array& other) noexcept {
-            memcpy(m_Arr, other.m_Arr, m_Size * sizeof(T));
-        }
+        Array(Array& other) : Array(const_cast<const Array&>(other)) {}
 
         /**
          * Copy assignment
@@ -68,7 +74,10 @@ namespace wtl {
          */
         Array& operator=(const Array& other) noexcept {
             if (this != &other) {
-                memcpy(m_Arr, other.m_Arr, m_Size * sizeof(T));
+                std::size_t i = 0;
+                for (const T& element : other.m_Arr) {
+                    m_Arr[i++] = element;
+                }
             }
             return *this;
         }
@@ -80,7 +89,7 @@ namespace wtl {
         Array(Array&& other) = delete;
 
         /**
-         * Move assignment
+         * Move assignment is deleted
          * @param other
          * @return
          */
