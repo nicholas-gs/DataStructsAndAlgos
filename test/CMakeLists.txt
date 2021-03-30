@@ -1,0 +1,5 @@
+add_subdirectory(util)
+add_subdirectory(DataStructures)
+add_subdirectory(SortingAlgorithms)
+add_subdirectory(Graphs)
+add_subdirectory(FlowNetworks)
