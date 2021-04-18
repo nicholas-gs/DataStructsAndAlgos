@@ -7,6 +7,7 @@
 #include "SinglyLinkedList.h"
 #include <cstddef>
 #include <stdexcept>
+#include <initializer_list>
 
 namespace wtl {
 
@@ -27,6 +28,9 @@ namespace wtl {
          * Default constructor
          */
         Stack_LL() = default;
+
+        Stack_LL(std::initializer_list<T> list)
+            : m_SLL(list) {}
 
         /**
         * Copy constructor

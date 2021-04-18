@@ -7,6 +7,7 @@
 #include <cstddef>
 #include <utility>
 #include <stdexcept>
+#include <initializer_list>
 
 namespace wtl {
 
@@ -66,6 +67,16 @@ namespace wtl {
         explicit Vector(std::size_t capacity) : m_Size(0), m_Capacity(capacity) {
             m_Arr = (T*) (::operator new(m_Capacity * sizeof(T)));
         }
+
+        Vector(std::initializer_list<T> list)
+            : m_Size(list.size()), m_Capacity(m_Size * 2) {
+                m_Arr = (T*)(::operator new(m_Capacity * sizeof(T)));
+                typename std::initializer_list<T>::const_iterator it = list.begin();
+                for(std::size_t i = 0; i < list.size(); i++) {
+                    new(&m_Arr[i]) T(*it);
+                    ++it;
+                }
+            }
 
         /**
          * Copy constructor

@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include <functional>
 #include <utility>
+#include <initializer_list>
 
 namespace wtl {
 
@@ -102,6 +103,12 @@ namespace wtl {
          * Constructor
          */
         SinglyLinkedList() = default;
+
+        SinglyLinkedList(std::initializer_list<T> list) {
+            for(auto it = std::rbegin(list); it != std::rend(list); ++it) {
+                appendFront(*it);
+            }
+        }
 
         /**
          * Copy constructor

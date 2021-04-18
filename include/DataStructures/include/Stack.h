@@ -4,6 +4,7 @@
 
 #include <cstddef>
 #include <stdexcept>
+#include <initializer_list>
 #include "Vector.h"
 
 namespace wtl {
@@ -25,6 +26,9 @@ namespace wtl {
          * Default constructor
          */
         Stack() = default;
+
+        Stack(std::initializer_list<T> list)
+            : m_Vector(list) {}
 
         /**
          * Copy constructor

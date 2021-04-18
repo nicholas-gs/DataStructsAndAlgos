@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include <functional>
 #include <utility>
+#include <initializer_list>
 
 namespace wtl {
 
@@ -155,6 +156,12 @@ namespace wtl {
          * Constructor
          */
         DoublyLinkedList() = default;
+
+        DoublyLinkedList(std::initializer_list<T> list) {
+            for(typename std::initializer_list<T>::const_iterator it = list.begin(); it != list.end(); ++it) {
+                appendBack(*it);
+            }
+        }
 
         /**
          * Copy constructor

@@ -7,6 +7,7 @@
 #include <exception>
 #include <cstddef>
 #include <functional>
+#include <initializer_list>
 #include "DoublyLinkedList.h"
 
 namespace wtl {
@@ -28,6 +29,9 @@ namespace wtl {
          * Constructor
          */
         Queue() = default;
+
+        Queue(std::initializer_list<T> list)
+            : m_dll(list) {}
 
         /**
          * Copy constructor

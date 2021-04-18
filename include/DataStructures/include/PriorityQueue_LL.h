@@ -7,6 +7,7 @@
 #include "SinglyLinkedList.h"
 #include "impl/DataStructuresImpl.h"
 #include <cstddef>
+#include <initializer_list>
 
 namespace wtl {
 
@@ -34,6 +35,9 @@ namespace wtl {
          * Default constructor
          */
         PriorityQueue_LL() = default;
+
+        PriorityQueue_LL(std::initializer_list<T> list)
+            : m_SLL(list) {}
 
         /**
          * Check if priority queue is empty

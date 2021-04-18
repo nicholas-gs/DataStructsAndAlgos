@@ -8,6 +8,7 @@
 #include "impl/DataStructuresImpl.h"
 #include <stdexcept>
 #include <cstddef>
+#include <initializer_list>
 
 namespace wtl {
 
@@ -34,6 +35,9 @@ namespace wtl {
          * @param order
          */
         PriorityQueue() = default;
+
+        PriorityQueue(std::initializer_list<T> list)
+            : m_Heap(list) {}
 
         /**
          * Constructor

@@ -14,3 +14,7 @@ add_subdirectory(include/FlowNetworks)
 if(BUILD_TESTS)
     add_subdirectory(test)
 endif(BUILD_TESTS)
+
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/exec" AND IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/exec")
+    add_subdirectory(exec)
+endif()

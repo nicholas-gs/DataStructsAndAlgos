@@ -10,6 +10,7 @@
 #include <stdexcept>
 #include <vector>
 #include <functional>
+#include <initializer_list>
 
 namespace wtl {
 
@@ -97,6 +98,11 @@ namespace wtl {
          * Constructor
          */
         Heap() = default;
+
+        Heap(std::initializer_list<T> list)
+            : m_Arr(list) {
+            constructHeap();
+        }
 
         /**
          * Constructor
